@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using ExileCore;
 using ExileCore.PoEMemory.Components;
@@ -179,5 +179,6 @@ namespace Terrain
 			// 2D rotation formulas not correct, but it's what appears to work?
 			return new Vector2((delta.X - delta.Y) * cos, deltaZ - (delta.X + delta.Y) * sin);
 		}
+
 	}
 }
