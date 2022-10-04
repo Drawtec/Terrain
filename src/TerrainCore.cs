@@ -167,7 +167,7 @@ namespace Terrain
 			);
 		}
 
-		public Vector2 DeltaInWorldToMinimapDelta(Vector2 delta, double diag, float scale, float deltaZ = 0)
+		public Vector2 DeltaInWorldToMinimapDelta(Vector2 delta, double diag, float scale, float deltaZ = posZ)
 		{
 			var CAMERA_ANGLE = 38 * MathUtil.Pi / 180;
 
