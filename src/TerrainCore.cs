@@ -167,7 +167,7 @@ namespace Terrain
 			);
 		}
 
-		public Vector2 DeltaInWorldToMinimapDelta(Vector2 delta, double diag, float scale, float deltaZ = 0)
+		public Vector2 DeltaInWorldToMinimapDelta(Vector2 delta, double diag, float scale, float deltaZ)
 		{
 			var CAMERA_ANGLE = 38 * MathUtil.Pi / 180;
 
@@ -176,6 +176,7 @@ namespace Terrain
 			var sin = (float) (diag * Math.Sin(CAMERA_ANGLE) /
 			                   scale); // possible to use cos so angle = nearly 45 degrees
 
+			deltaZ /= 10.87f;
 			// 2D rotation formulas not correct, but it's what appears to work?
 			return new Vector2((delta.X - delta.Y) * cos, deltaZ - (delta.X + delta.Y) * sin);
 		}
