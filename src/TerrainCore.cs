@@ -79,8 +79,6 @@ namespace Terrain
 					_bitmap[k++] = (b & 0xf) > 0 ? color : 0;
 				}
 				dataIndex += terrain.BytesPerRow;
-                		}
-				dataIndex += terrain.BytesPerRow;
 			}
 
 			if (_bitmapHandle.IsAllocated)
