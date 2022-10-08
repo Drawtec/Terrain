@@ -72,33 +72,33 @@ namespace Terrain
 			var color = Settings.TerrainColor.Value.ToRgba();
 			for (int i = 0; i < _numRows; i++)
 			{
-                for (int j = 0; j < _numCols; j += 2)
-                {
-                    var b = LayerMelee[dataIndex + (j >> 1)];
-                    _bitmap[k++] = (b >> 4);
-                    if (_bitmap[k] < 0 && _bitmap[k] > 2)
-                    {
-                        _bitmap[k] = 0;
-                    }
-                    else
-                    {
-                        _bitmap[k] = color;
-                    }
-                    _bitmap[k++] = (b & 0xf);
-                    if (_bitmap[k] > 0)
-                    {
-                        _bitmap[k] = color;
-                    }
-                    else 
-                    { 
-                        _bitmap[k] = 0; 
-                    }
-                }
+               			 for (int j = 0; j < _numCols; j += 2)
+               			 {
+                    		var b = terrainBytes[dataIndex + (j >> 1)];
+                  		  _bitmap[k++] = (b >> 4);
+               				if (_bitmap[k] < 0 && _bitmap[k] > 2)
+                    			{
+         					_bitmap[k] = 0;
+                    			}
+                    			else
+                    			{
+                        			_bitmap[k] = color;
+                    			}
+                    		_bitmap[k++] = (b & 0xf);
+                    			if (_bitmap[k] > 0)
+                   			 {
+                        		_bitmap[k] = color;
+                    			}
+                    			else 
+                    			{ 
+                        		_bitmap[k] = 0; 
+                    			}
+                		}
 				dataIndex += terrain.BytesPerRow;
 			}
 
 			if (_bitmapHandle.IsAllocated)
-				_bitmapHandle.Free();
+			_bitmapHandle.Free();
 			_bitmapHandle = GCHandle.Alloc(_bitmap, GCHandleType.Pinned);
 
 			var texture = new Texture2D(Graphics.LowLevel.D11Device, new Texture2DDescription
