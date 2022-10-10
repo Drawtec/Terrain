@@ -59,7 +59,7 @@ namespace Terrain
 			if (!Settings.Enable)
 				return;
 			var terrain = GameController.IngameState.Data.Terrain;
-			var terrainBytes = GameController.Memory.ReadBytes(terrain.LayerRanged.First, terrain.LayerRanged.Size);
+			var terrainBytes = GameController.Memory.ReadBytes(terrain.LayerMelee.First, terrain.LayerMelee.Size);
 			
 			_numCols = (int) terrain.NumCols * 23;
 			_numRows = (int) terrain.NumRows * 23;
