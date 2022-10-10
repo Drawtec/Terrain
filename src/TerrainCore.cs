@@ -75,8 +75,8 @@ namespace Terrain
 				for (int j = 0; j < _numCols; j += 2)
 				{
 					var b = terrainBytes[dataIndex + (j >> 1)];
-					_bitmap[k++] = (b >> 4) > 0 ? color : 0;
-					_bitmap[k++] = (b & 0xf) > 0 ? color : 0;
+					_bitmap[k++] = (b >> 4) == 1 ? color : 0;
+					_bitmap[k++] = (b & 0xf) == 1 ? color : 0;
 				}
 				dataIndex += terrain.BytesPerRow;
 			}
