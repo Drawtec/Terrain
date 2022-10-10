@@ -23,6 +23,7 @@ namespace Terrain
 		private float _scale;
 		private Vector2 _screenCenterCache;
 		private int[] _bitmap;
+		private int[] _bitmap2;
 		private GCHandle _bitmapHandle;
 		private bool _enabled = true;
 
@@ -60,6 +61,7 @@ namespace Terrain
 				return;
 			var terrain = GameController.IngameState.Data.Terrain;
 			var terrainBytes = GameController.Memory.ReadBytes(terrain.LayerMelee.First, terrain.LayerMelee.Size);
+			var terrainBytesRanged = GameController.Memory.ReadBytes(terrain.LayerRanged.First, terrain.LayerRanged.Size);
 			
 			_numCols = (int) terrain.NumCols * 23;
 			_numRows = (int) terrain.NumRows * 23;
@@ -70,6 +72,7 @@ namespace Terrain
 			int k = 0;
 			int dataIndex = 0;
 			var color = Settings.TerrainColor.Value.ToRgba();
+			var color2 = 0x4F8F8F4D;
 			for (int i = 0; i < _numRows; i++)
 			{
 				for (int j = 0; j < _numCols; j += 2)
@@ -99,6 +102,37 @@ namespace Terrain
 			}, new[] {new DataBox(_bitmapHandle.AddrOfPinnedObject(), sizeof(int)*_numCols, 0)});
 			var srv = new ShaderResourceView(Graphics.LowLevel.D11Device, texture);
 			Graphics.LowLevel.AddOrUpdateTexture("terrain", srv);
+			
+			_bitmap2 = new int[_numCols * _numRows];
+			int k = 0;
+			int dataIndex = 0;
+			for (int i = 0; i < _numRows; i++)
+			{
+				for (int j = 0; j < _numCols; j += 2)
+				{
+					var b = terrainBytesRanged[dataIndex + (j >> 1)];
+					_bitmap2[k++] = (b >> 4) > 0 ? color : 0;
+					_bitmap2[k++] = (b & 0xf) > 0 ? color : 0;
+				}
+				dataIndex += terrain.BytesPerRow;
+			}
+			if (_bitmapHandle.IsAllocated)
+			_bitmapHandle.Free();
+			_bitmapHandle = GCHandle.Alloc(_bitmap2, GCHandleType.Pinned);
+				var texture2 = new Texture2D(Graphics.LowLevel.D11Device, new Texture2DDescription
+			{
+				ArraySize = 1,
+				Height = _numRows,
+				Width = _numCols,
+				Format = Format.R8G8B8A8_UNorm,
+				BindFlags = BindFlags.ShaderResource,
+				Usage = ResourceUsage.Default,
+				MipLevels = 1,
+				CpuAccessFlags = CpuAccessFlags.Write,
+				SampleDescription = new SampleDescription(1, 0)
+			}, new[] {new DataBox(_bitmapHandle.AddrOfPinnedObject(), sizeof(int)*_numCols, 0)});
+			var srv = new ShaderResourceView(Graphics.LowLevel.D11Device, texture2);
+			Graphics.LowLevel.AddOrUpdateTexture("terrain2", srv);
 		}
 
 		public override bool Initialise()
@@ -160,6 +194,11 @@ namespace Terrain
 			Vector2 Transform(Vector2 p) => _screenCenterCache + DeltaInWorldToMinimapDelta(p - playerPos, Diag, _scale, -posZ / (9f / mapWindowLargeMapZoom));
 
 			Graphics.DrawTexture(Graphics.LowLevel.GetTexture("terrain").NativePointer,
+				Transform(new Vector2(0, 0)),
+				Transform(new Vector2(_numCols, 0)),
+				Transform(new Vector2(_numCols, _numRows)),
+				Transform(new Vector2(0, _numRows))
+			Graphics.DrawTexture(Graphics.LowLevel.GetTexture("terrain2").NativePointer,
 				Transform(new Vector2(0, 0)),
 				Transform(new Vector2(_numCols, 0)),
 				Transform(new Vector2(_numCols, _numRows)),
