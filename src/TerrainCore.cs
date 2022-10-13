@@ -93,7 +93,7 @@ namespace Terrain
 				Format = Format.R8G8B8A8_UNorm,
 				BindFlags = BindFlags.ShaderResource,
 				Usage = ResourceUsage.Default,
-				MipLevels = 1,
+				MipLevels = 2,
 				CpuAccessFlags = CpuAccessFlags.Write,
 				SampleDescription = new SampleDescription(1, 0)
 			}, new[] {new DataBox(_bitmapHandle.AddrOfPinnedObject(), sizeof(int)*_numCols, 0)});
