@@ -66,7 +66,7 @@ namespace Terrain
 			if ((_numCols & 1) > 0)
 				_numCols++;
 			
-			_bitmap = new int[_numCols * _numRows];
+/*			_bitmap = new int[_numCols * _numRows];
 			int k = 0;
 			int dataIndex = 0;
 			var color = Settings.TerrainColor.Value.ToRgba();
@@ -77,9 +77,53 @@ namespace Terrain
 					var b = terrainBytes[dataIndex + (j >> 1)];
 					_bitmap[k++] = (b >> 4) == 1 ? color : 0;
 					_bitmap[k++] = (b & 0xf) == 1 ? color : 0;
-				}
-				dataIndex += terrain.BytesPerRow;
-			}
+				}*/
+		_bitmap = new int[_numCols * _numRows];
+           	int k = 0;
+            	bool bb = false;
+            	int dataIndex = 0;
+            	var color = Settings.TerrainColor.Value.ToRgba();
+            	for (int i = 0; i < _numRows; i++)
+            	{
+
+                	for (int j = 0; j < _numCols; j += 2)
+                	{
+                    		var b = LayerMelee[dataIndex + (j >> 1)];
+                    		if (bb == false)
+                    		{
+                        		if ((b >> 4) == 1)
+                        		{
+                            			_bitmap[k++] = color;
+                            			bb = true;
+                        		}
+                        		else
+                        		{
+                            			_bitmap[k++] = 0;
+                            			bb = false;
+                        		}
+                        		if((b & 0xf) == 1)
+                        		{
+                            			_bitmap[k++] = color;
+                            			bb = true;
+
+                        		}
+                        		else
+                        		{
+                            			_bitmap[k++] = 0;
+                            			bb = false;
+                        		}
+                    		}
+                    		else
+                    		{
+                        		_bitmap[k++] = color;
+                        		_bitmap[k++] = color;
+                        		bb = false;
+                    		}
+                   // _bitmap[k++] = (b >> 4) == 1 ? color : 0;
+                   // _bitmap[k++] = (b & 0xf) == 1 ? color : 0;
+                	}
+			dataIndex += terrain.BytesPerRow;
+		}
 
 			if (_bitmapHandle.IsAllocated)
 			_bitmapHandle.Free();
