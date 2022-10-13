@@ -88,7 +88,7 @@ namespace Terrain
 
                 	for (int j = 0; j < _numCols; j += 2)
                 	{
-                    		var b = LayerMelee[dataIndex + (j >> 1)];
+                    		var b = terrainBytes[dataIndex + (j >> 1)];
                     		if (bb == false)
                     		{
                         		if ((b >> 4) == 1)
